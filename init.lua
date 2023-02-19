@@ -58,10 +58,10 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Down", function()
 end)
 
 -- Toggle fullscreen
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "f", function()
-  	local win = hs.window.focusedWindow()
-	win:toggleFullScreen()
-  end)
+-- hs.hotkey.bind({"cmd", "alt", "ctrl"}, "f", function()
+--  	local win = hs.window.focusedWindow()
+-- 	win:toggleFullScreen()
+--  end)
 
 -- Send the window to next screen
 hs.hotkey.bind({'alt', 'ctrl', 'cmd'}, 'n', function()
@@ -177,7 +177,6 @@ local appNames = {
   "Microsoft Outlook",
   "Workplace Chat",
   "iTerm",
-  "Workplace Chat",
   "Asana"
 }
 
@@ -266,18 +265,39 @@ end
 local hyper = {"cmd", "alt", "ctrl"}
 
 local applicationHotkeys = {
-  c = 'Google Chrome',
+  e = 'Google Chrome',
+  f = 'Finder',
   t = 'iTerm',
   v = 'VS Code @ FB',
-  r = 'Reminders',
-  w = 'Notes',
-  d = 'Stocks',
+  w = 'Obsidian',
+  s = 'Stocks',
   b = 'BBEdit',
-  o = "Microsoft Outlook",
-  a = "Asana"
+  -- o = "Microsoft Outlook",
+  a = "Asana",
+  c = "Workplace Chat",
 }
+
+-- launch focus or rotate application
+local function launchOrFocusOrRotate(app)
+	local focusedWindow = hs.window.focusedWindow()
+	-- If already focused, try to find the next window
+	if focusedWindow and focusedWindow:application():name() == app then
+		local appWindows = hs.application.get(app):allWindows()
+		if #appWindows > 0 then
+			-- It seems that this list order changes after one window get focused, 
+			-- let's directly bring the last one to focus every time
+			appWindows[#appWindows]:focus()
+		else -- should not happen, but just to make sure
+			hs.application.launchOrFocus(app)
+		end
+	else -- not focused
+		hs.application.launchOrFocus(app)
+	end
+end
+
+
 for key, app in pairs(applicationHotkeys) do
   hs.hotkey.bind(hyper, key, function()
-    hs.application.launchOrFocus(app)
+    launchOrFocusOrRotate(app)
   end)
 end
