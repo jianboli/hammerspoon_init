@@ -177,7 +177,8 @@ local appNames = {
   "Microsoft Outlook",
   "Workplace Chat",
   "iTerm",
-  "Asana"
+  "Obsidian",
+  "Pandora"
 }
 
 -- first by resolution then by x
@@ -212,23 +213,25 @@ function switchLayout()
     layout = layoutSingleScreen
   elseif numScreens == 2 then
   	layout = {
+  			{"Workplace Chat", nil, allScreens[2], hs.layout.left50, nil, nil},
 			{"VS Code @ FB", nil, allScreens[2], hs.layout.maximized, nil, nil},
 			{"iTerm2", nil, allScreens[1], hs.layout.left50, nil, nil},
-			{"Workplace Chat", nil, allScreens[1], hs.layout.left50, nil, nil},
-			{"Asana", nil, allScreens[1], hs.layout.right50, nil, nil},
-			{"Microsoft Outlook", nil, allScreens[1], positions.full, nil, nil},
+			{"Obsidian", nil, allScreens[1], hs.layout.right50, nil, nil},
+			{"Pandora", nil, allScreens[1], hs.layout.left50, nil, nil},
+			-- {"Microsoft Outlook", nil, allScreens[1], positions.full, nil, nil},
 	}
   -- Chrome always goes to the larger screen
 	for k, g in pairs(chrome_windows) do
 		layout[#layout+1] = {"Google Chrome", g, allScreens[2], hs.layout.maximized, nil, nil}
 	end
   elseif numScreens == 3 then
-    layout = {    
+    layout = {
+    		{"Workplace Chat", nil, allScreens[2], hs.layout.left50, nil, nil},    
 			{"VS Code @ FB", nil, allScreens[3], hs.layout.maximized, nil, nil},
 			{"iTerm2", nil, allScreens[1], hs.layout.maximized, nil, nil},
-			{"Workplace Chat", nil, allScreens[1], hs.layout.left50, nil, nil},
-			{"Asana", nil, allScreens[1], hs.layout.right50, nil, nil},
-			{"Microsoft Outlook", nil, allScreens[1], hs.layout.maximized, nil, nil},
+			{"Pandora", nil, allScreens[1], hs.layout.left50, nil, nil},
+			{"Obsidian", nil, allScreens[1], hs.layout.right50, nil, nil},
+			-- {"Microsoft Outlook", nil, allScreens[1], hs.layout.maximized, nil, nil},
 		}
 	-- Add all chrome windows to the most left largest screen
 	for k, g in pairs(chrome_windows) do
@@ -272,9 +275,11 @@ local applicationHotkeys = {
   w = 'Obsidian',
   s = 'Stocks',
   b = 'BBEdit',
-  -- o = "Microsoft Outlook",
+  o = "Microsoft Outlook",
   a = "Asana",
   c = "Workplace Chat",
+  p = "Pandora",
+  q = "quip"
 }
 
 -- launch focus or rotate application
