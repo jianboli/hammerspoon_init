@@ -273,13 +273,15 @@ local applicationHotkeys = {
   t = 'iTerm',
   v = 'VS Code @ FB',
   w = 'Obsidian',
-  s = 'Stocks',
   b = 'BBEdit',
   o = "Microsoft Outlook",
   a = "Asana",
   c = "Workplace Chat",
   p = "Pandora",
-  q = "quip"
+  q = "quip",
+  m = "MacVim",
+  s = "My Tasks",
+  l = "Work Calendar"
 }
 
 -- launch focus or rotate application
@@ -306,3 +308,28 @@ for key, app in pairs(applicationHotkeys) do
     launchOrFocusOrRotate(app)
   end)
 end
+
+-- stickies based desktop/space switcher
+local function showWindowSwitcher()
+	--hs.window.switcher.new{'Stickies'}
+	switcher = hs.window.switcher.new{'Stickies'}
+	switcher:next()
+end
+
+function showAppMissionControl(appName)
+    local app = hs.application.get(appName)
+    
+    if app then
+    	app:activate()
+    	
+    	-- Trigger Mission Control (Application Exposé)
+        hs.eventtap.keyStroke({ "fn", "ctrl" }, "down") -- You may need to adjust the key combination if your keyboard layout is different
+        
+        -- app:selectMenuItem({ "Window", "Application Exposé" }) -- Trigger Mission Control for the app
+    end
+end
+
+
+hs.hotkey.bind(hyper, 'space', function()
+    showAppMissionControl('Stickies')
+end)
