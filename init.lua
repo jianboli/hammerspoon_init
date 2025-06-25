@@ -177,8 +177,7 @@ local appNames = {
   "Microsoft Outlook",
   "Workplace Chat",
   "iTerm",
-  "Obsidian",
-  "Pandora"
+  "Asana"
 }
 
 -- first by resolution then by x
@@ -213,25 +212,23 @@ function switchLayout()
     layout = layoutSingleScreen
   elseif numScreens == 2 then
   	layout = {
-  			{"Workplace Chat", nil, allScreens[2], hs.layout.left50, nil, nil},
 			{"VS Code @ FB", nil, allScreens[2], hs.layout.maximized, nil, nil},
 			{"iTerm2", nil, allScreens[1], hs.layout.left50, nil, nil},
-			{"Obsidian", nil, allScreens[1], hs.layout.right50, nil, nil},
-			{"Pandora", nil, allScreens[1], hs.layout.left50, nil, nil},
-			-- {"Microsoft Outlook", nil, allScreens[1], positions.full, nil, nil},
+			{"Workplace Chat", nil, allScreens[1], hs.layout.left50, nil, nil},
+			{"Asana", nil, allScreens[1], hs.layout.right50, nil, nil},
+			{"Microsoft Outlook", nil, allScreens[1], positions.full, nil, nil},
 	}
   -- Chrome always goes to the larger screen
 	for k, g in pairs(chrome_windows) do
 		layout[#layout+1] = {"Google Chrome", g, allScreens[2], hs.layout.maximized, nil, nil}
 	end
   elseif numScreens == 3 then
-    layout = {
-    		{"Workplace Chat", nil, allScreens[2], hs.layout.left50, nil, nil},    
+    layout = {    
 			{"VS Code @ FB", nil, allScreens[3], hs.layout.maximized, nil, nil},
 			{"iTerm2", nil, allScreens[1], hs.layout.maximized, nil, nil},
-			{"Pandora", nil, allScreens[1], hs.layout.left50, nil, nil},
-			{"Obsidian", nil, allScreens[1], hs.layout.right50, nil, nil},
-			-- {"Microsoft Outlook", nil, allScreens[1], hs.layout.maximized, nil, nil},
+			{"Workplace Chat", nil, allScreens[1], hs.layout.left50, nil, nil},
+			{"Asana", nil, allScreens[1], hs.layout.right50, nil, nil},
+			{"Microsoft Outlook", nil, allScreens[1], hs.layout.maximized, nil, nil},
 		}
 	-- Add all chrome windows to the most left largest screen
 	for k, g in pairs(chrome_windows) do
@@ -271,26 +268,26 @@ local applicationHotkeys = {
   e = 'Google Chrome',
   f = 'Finder',
   t = 'iTerm',
-  v = 'VS Code @ FB',
-  w = 'Obsidian',
+  v = 'Code',
+  w = 'Microsoft Word',
+  s = 'Stocks',
   b = 'BBEdit',
-  o = "Microsoft Outlook",
-  a = "Asana",
-  c = "Workplace Chat",
-  p = "Pandora",
-  q = "quip",
+  o = 'Obsidian',
+  l = 'Calendar',
+  p = "Preview",
   m = "MacVim",
-  s = "My Tasks",
-  l = "Work Calendar"
+  z = "Zoom Meeting",
+  a = "Voice Memos"
 }
 
 -- launch focus or rotate application
 local function launchOrFocusOrRotate(app)
+  hs.application.enableSpotlightForNameSearches(true)
 	local focusedWindow = hs.window.focusedWindow()
 	-- If already focused, try to find the next window
 	if focusedWindow and focusedWindow:application():name() == app then
-		local appWindows = hs.application.get(app):allWindows()
-		if #appWindows > 0 then
+    local appWindows = hs.application.get(app):allWindows()
+    if #appWindows > 0 then
 			-- It seems that this list order changes after one window get focused, 
 			-- let's directly bring the last one to focus every time
 			appWindows[#appWindows]:focus()
@@ -298,6 +295,15 @@ local function launchOrFocusOrRotate(app)
 			hs.application.launchOrFocus(app)
 		end
 	else -- not focused
+		if app == 'Code' then
+			app = 'Visual Studio Code'
+    elseif app == "Voice Memos" then
+      hs.osascript.applescript([[
+            tell application "Voice Memos"
+                activate
+            end tell
+        ]])
+		end
 		hs.application.launchOrFocus(app)
 	end
 end
@@ -308,28 +314,3 @@ for key, app in pairs(applicationHotkeys) do
     launchOrFocusOrRotate(app)
   end)
 end
-
--- stickies based desktop/space switcher
-local function showWindowSwitcher()
-	--hs.window.switcher.new{'Stickies'}
-	switcher = hs.window.switcher.new{'Stickies'}
-	switcher:next()
-end
-
-function showAppMissionControl(appName)
-    local app = hs.application.get(appName)
-    
-    if app then
-    	app:activate()
-    	
-    	-- Trigger Mission Control (Application Exposé)
-        hs.eventtap.keyStroke({ "fn", "ctrl" }, "down") -- You may need to adjust the key combination if your keyboard layout is different
-        
-        -- app:selectMenuItem({ "Window", "Application Exposé" }) -- Trigger Mission Control for the app
-    end
-end
-
-
-hs.hotkey.bind(hyper, 'space', function()
-    showAppMissionControl('Stickies')
-end)
